@@ -1,0 +1,22 @@
+{
+  "name": "wapm",
+  "version": "0.1.0",
+  "description": "Web Audio Package Manager CLI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nko3/swagger.git"
+  },
+  "dependencies": {
+    "express" : "latest",
+    "mongoose" : "latest",
+    "request-extend" : "latest"
+  },
+  "engines": {
+    "node": "0.8.x"
+  },
+  "subdomain": "swagger.nko3"
+}

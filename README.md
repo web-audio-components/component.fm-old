@@ -1,4 +1,11 @@
-# Hello swagger!
+# Web Audio Package Manager
+
+This project has 3 components -- a RESTful package manager service, a CLI interface for pushing and querying, and a web app to display available packages and try out the web audio packages in real-time.
+
+These 3 projects will ultimately be pulled out into their own repo, so the core package.json is for deployment.
+
+
+
 
 ## Deploy instructions
 

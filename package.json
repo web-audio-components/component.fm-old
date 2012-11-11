@@ -14,7 +14,9 @@
     "express" : "latest",
     "mongoose" : "latest",
     "request-extend" : "latest",
-    "ejs" : "latest"
+    "ejs" : "latest",
+    "node-schedule" : "latest",
+    "github" : "latest"
   },
   "engines": {
     "node": "0.8.x"

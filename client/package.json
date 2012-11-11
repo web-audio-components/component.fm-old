@@ -1,0 +1,9 @@
+{
+  "name": "wapm-app-client",
+  "version": "0.1.0",
+  "description": "client-side of the wapm application",
+  "main": "",
+  "devDependencies": {
+    "grunt-contrib" : "latest"
+  }
+}

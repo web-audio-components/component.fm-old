@@ -1,0 +1,10 @@
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+#search-bar {
+  width: 900px;
+  height: 30px;
+  font-size: 30px;
+}

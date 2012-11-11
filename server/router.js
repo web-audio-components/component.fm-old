@@ -7,8 +7,8 @@ module.exports = function ( app ) {
   });
 
   app.get( '/packages', packages.index );
-  app.post( '/packages', packages.create );
   app.get( '/packages/:name', packages.show );
+  app.get( '/packages/:name/script', packages.script );
   app.get( '/packages/search/:name', packages.search );
 
   app.use(function ( err, req, res, next ) {

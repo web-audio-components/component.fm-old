@@ -1,46 +1,57 @@
-var handleError = require( '../lib/handleError' );
+var request = require( 'request' );
+var url = require( '../config' )[ process.env.NODE_ENV || 'development' ].serviceURL;
 
 // GET /packages
 exports.index = function ( req, res, next ) {
-  req.models.Packages.find( {}, function ( err, packages ) {
+  request.get({ uri: url + '/packages', json: true }, function ( err, response, body ) {
     if ( !err ) {
-      res.json( packages );
+      res.json( body );
     } else {
-      handleError( err, next );
-    }
-  });
-};
-
-// POST /packages
-exports.create = function ( req, res, next ) {
-  var pkg = new req.models.Packages( req.body );
-  pkg.save(function ( err ) {
-    if ( !err ) {
-      res.json({ success: true, message: 'Package added' });
-    } else {
-      handleError( err, next );
+      next( err );
     }
   });
 };
 
 // GET /packages/:name
 exports.show = function ( req, res, next ) {
-  req.models.Packages.findOne({ name: req.params.name }, function ( err, pkg ) {
+  request.get({ uri: url + '/packages/' + req.params.name, json: true }, function ( err, response, body ) {
     if ( !err ) {
-      res.json( pkg ? pkg : {}); 
+      res.json( body );
     } else {
-      handleError( err, next );
+      next( err );
     }
   });
 };
 
 // GET /packages/search/:name
 exports.search = function ( req, res, next ) {
-  req.models.Packages.search( req.params.name, function ( err, packages ) {
+  request.get({ uri: url + '/packages/search/' + req.params.name, json: true }, function ( err, response, body ) {
     if ( !err ) {
-      res.json( packages );
+      res.json( body );
     } else {
-      handleError( err, next );
+      next( err );
+    }
+  });
+};
+
+// TODO this really sucks, should be stored on own server, and not have to query twice, and github at all
+// GET /packages/:name/script
+exports.script = function ( req, res, next ) {
+  request.get({ uri: url + '/packages/' + req.params.name, json: true }, function ( err, response, body ) {
+    if ( !err ) {
+      getScript( res, body );
+    } else {
+      next( err );
+    }
+  });
+};
+
+function getScript ( res, pkg ) {
+  request.get( 'https://raw.github.com/' + pkg.repo + '/master/' + pkg.script, function ( err, response, body ) {
+    if ( !err ) {
+      res.send( body );
+    } else {
+      // error?
     }
   });
 };

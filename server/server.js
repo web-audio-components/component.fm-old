@@ -5,13 +5,13 @@ var
   config = require( './config' )[ process.env.NODE_ENV || 'development' ],
   app = express();
 
-var
-  db = mongoose.connect( config.db.URL ),
-  models = require( './models' )({ mongoose: mongoose, db: db });
+//var
+//  db = mongoose.connect( config.db.URL ),
+//  models = require( './models' )({ mongoose: mongoose, db: db });
 
 app
   .use( express.bodyParser() )
-  .use( reqExtend( 'models', models ))
+//  .use( reqExtend( 'models', models ))
   .use( reqExtend( 'config', config ))
   .use( express.static( __dirname + '/../client/public/' ))
   .use( app.router );

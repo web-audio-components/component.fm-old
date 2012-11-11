@@ -1,5 +1,5 @@
 var request = require( 'request' );
-var url = require( '../config' )[ process.env.NODE_ENV || 'development' ].serviceURL;
+var url = require( '../config' ).serviceURL;
 
 // GET /packages
 exports.index = function ( req, res, next ) {

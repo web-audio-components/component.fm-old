@@ -1,4 +1,4 @@
-module.exports = {
+var config = {
   production : {
     db : {
       URL : process.env['wapm-app-mongodb-url']
@@ -20,3 +20,5 @@ module.exports = {
     port : 9000
   } 
 };
+
+module.exports = config[ process.env.NODE_ENV || 'development' ];

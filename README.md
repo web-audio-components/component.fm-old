@@ -10,3 +10,4 @@ The service and CLI components are pulled out into different repositories rather
 ## TODO
 
 * Cache github responses and check against last updated and store the module scripts once on server and serve those, rather than banging GitHub
+* Use font-awesome instead of bootstrap icons

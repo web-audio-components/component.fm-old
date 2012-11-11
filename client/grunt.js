@@ -42,6 +42,8 @@ module.exports = function(grunt) {
         src: [
           './app/setup.js',
           './public/js/templates.js',
+          './app/models/*.js',
+          './app/collections/*.js',
           './app/routes/*.js',
           './app/views/View.js',
           './app/views/*.js',

@@ -1,0 +1,12 @@
+{
+  "name" : "wapm app",
+  "version": "0.1.0",
+  "main": "./public/index.html",
+  "dependencies": {
+    "jquery" : "*",
+    "backbone" : "*",
+    "bootstrap" : "*",
+    "handlebars" : "*",
+    "font-awesome" : "*"
+  }
+}

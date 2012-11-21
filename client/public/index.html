@@ -42,5 +42,10 @@
         </script>
         <script src="js/lib.js"></script>
         <script src="js/app.js"></script>
+        <script>
+            if ( !window.AudioContext && !window.webkitAudioContext ) {
+                alert('No audiocontext found');
+            }
+        </script>
     </body>
 </html>

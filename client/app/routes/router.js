@@ -14,16 +14,9 @@
     },
 
     index : function () {
-      $('#content > div').hide();
-      app.indexView.$el.show();
-      app.searchBarView.$el.show();
-      app.searchResultsView.$el.show();
     },
 
     search : function () {
-      $('#content > div').hide();
-      app.searchResultsView.$el.show();
-      app.searchBarView.$el.show();
     }
   });
 

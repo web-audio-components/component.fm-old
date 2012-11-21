@@ -11,8 +11,8 @@
 
     handleSearch: function ( e ) {
       var query = $( e.target ).val();
-      Backbone.history.navigate( 'packages/search/' + query, true );
       this.trigger( 'query', query );
+      app.indexView.$el.slideUp();
     }
   });
 })();

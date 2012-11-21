@@ -1,8 +1,12 @@
 <div class="row">
-  <h2>Results for {{query}}</h2>
+  {{#if query}}
+    <h2>Results for {{query}}</h2>
+  {{else}}
+    <h2>Recent packages</h2>
+  {{/if}}
   <ul class="nav nav-tabs nav-stacked">
     {{#each packages}}
-      <li><a href="#">{{name}}</a> - {{description}}</li>
+      <li><a href="#" data-name="{{name}}">{{name}} - {{description}}</a></li>
     {{/each}}
   </ul>
 </div>

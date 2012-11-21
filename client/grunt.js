@@ -34,6 +34,7 @@ module.exports = function(grunt) {
           './components/jquery/jquery.js',
           './components/underscore/underscore.js',
           './components/backbone/backbone.js',
+          './components/requirejs/require.js',
           './components/handlebars/handlebars-1.0.0-rc.1.js'
         ],
         dest: 'public/js/lib.js'

@@ -1,7 +1,11 @@
 (function () {
   app.views.SearchResults = app.views.View.extend({
     template : Handlebars.template( app.templates.searchResults ),
-    
+  
+    events : {
+      'click a' : 'handlePackageSelect'
+    },
+
     initialize: function ( options ) {
       this.search = options.search;
       this.packages = new app.collections.Packages();
@@ -23,11 +27,15 @@
     },
 
     preRender : function () {
-                  console.log(this.packages.toJSON());
       this.render({
         packages : this.packages.toJSON(),
         query : this.packages.query
       });
+    },
+
+    handlePackageSelect : function ( e ) {
+      var name = $( e.target ).data( 'name' );
+      this.trigger( 'select:package', name );
     }
   });
 })();

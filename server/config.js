@@ -11,7 +11,8 @@ var config = {
       URL : 'mongodb://localhost:27017/wapm-app'
     },
     port : 9000,
-    serviceURL : 'http://localhost:8000'
+    serviceURL : 'http://wapm-service.jit.su'
+    //serviceURL : 'http://localhost:8000'
   },
   test : {
     db : {

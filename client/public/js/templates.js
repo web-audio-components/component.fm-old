@@ -49,7 +49,7 @@ this["app"]["templates"]["package"] = function (Handlebars,depth0,helpers,partia
   foundHelper = helpers.watchers;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.watchers; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + " stars</td>\n      </tr>\n    </tbody>\n  </table>\n\n</div>\n";
+  buffer += escapeExpression(stack1) + " stars</td>\n      </tr>\n    </tbody>\n  </table>\n  <div class=\"activate-player\">\n    <a href=\"#\">Demo this module</a>\n  </div>\n</div>\n";
   return buffer;};
 
 this["app"]["templates"]["player"] = function (Handlebars,depth0,helpers,partials,data) {

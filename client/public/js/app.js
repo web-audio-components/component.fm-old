@@ -56,7 +56,7 @@ this["app"]["templates"]["package"] = function (Handlebars,depth0,helpers,partia
   foundHelper = helpers.watchers;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.watchers; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + " stars</td>\n      </tr>\n    </tbody>\n  </table>\n\n</div>\n";
+  buffer += escapeExpression(stack1) + " stars</td>\n      </tr>\n    </tbody>\n  </table>\n  <div class=\"activate-player\">\n    <a href=\"#\">Demo this module</a>\n  </div>\n</div>\n";
   return buffer;};
 
 this["app"]["templates"]["player"] = function (Handlebars,depth0,helpers,partials,data) {
@@ -240,6 +240,10 @@ function program5(depth0,data) {
 
     className : 'package-view',
 
+    events : {
+      'click .activate-player a' : 'handleActivateDemo'
+    },
+
     initialize : function ( options ) {
       this.packages = options.packages;
 
@@ -265,8 +269,12 @@ function program5(depth0,data) {
     },
 
     formatKeywords : function ( keywords ) {
-                       console.log(keywords);
       return ( keywords || [] ).join( ', ' );
+    },
+
+    handleActivateDemo : function ( e ) {
+      e.preventDefault();
+      this.trigger( 'activate:demo', this.package );
     }
 
   });
@@ -279,9 +287,11 @@ function program5(depth0,data) {
 
     className : 'player-view',
 
-    initialize: function () {
+    initialize: function ( options ) {
+      this.packageView = options.packageView;
       this.context = new ( window.AudioContext || window.webkitAudioContext )();
-      app.packageView.on( 'select:package', this.loadPackage, this );
+
+      this.packageView.on( 'activate:demo', this.selectPackage, this );
 
       this.$el.data( 'hidden', true );
       this.$('.samples').change();
@@ -292,14 +302,19 @@ function program5(depth0,data) {
       'change .samples' : 'handleLoadSample'
     },
 
-    loadPackage : function ( name ) {
+    selectPackage : function ( pkg ) {
+      this.package = pkg;
+      this.loadPackage();
+    },
+
+    loadPackage : function () {
       var that = this;
 
       if ( this.$el.data('hidden') ) {
         this.showPlayer();
       }
 
-      require(['/packages/' + name + '/script.js'], function ( module ) {
+      require(['/packages/' + this.package.get( 'name' ) + '/script.js'], function ( module ) {
         that.module = new module( that.context );
         that.packageLoaded();
         that.module.connect( that.context.destination );

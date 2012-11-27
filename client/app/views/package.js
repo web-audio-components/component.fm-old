@@ -5,6 +5,10 @@
 
     className : 'package-view',
 
+    events : {
+      'click .activate-player a' : 'handleActivateDemo'
+    },
+
     initialize : function ( options ) {
       this.packages = options.packages;
 
@@ -30,8 +34,12 @@
     },
 
     formatKeywords : function ( keywords ) {
-                       console.log(keywords);
       return ( keywords || [] ).join( ', ' );
+    },
+
+    handleActivateDemo : function ( e ) {
+      e.preventDefault();
+      this.trigger( 'activate:demo', this.package );
     }
 
   });

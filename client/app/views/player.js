@@ -5,9 +5,11 @@
 
     className : 'player-view',
 
-    initialize: function () {
+    initialize: function ( options ) {
+      this.packageView = options.packageView;
       this.context = new ( window.AudioContext || window.webkitAudioContext )();
-      app.packageView.on( 'select:package', this.loadPackage, this );
+
+      this.packageView.on( 'activate:demo', this.selectPackage, this );
 
       this.$el.data( 'hidden', true );
       this.$('.samples').change();
@@ -18,14 +20,19 @@
       'change .samples' : 'handleLoadSample'
     },
 
-    loadPackage : function ( name ) {
+    selectPackage : function ( pkg ) {
+      this.package = pkg;
+      this.loadPackage();
+    },
+
+    loadPackage : function () {
       var that = this;
 
       if ( this.$el.data('hidden') ) {
         this.showPlayer();
       }
 
-      require(['/packages/' + name + '/script.js'], function ( module ) {
+      require(['/packages/' + this.package.get( 'name' ) + '/script.js'], function ( module ) {
         that.module = new module( that.context );
         that.packageLoaded();
         that.module.connect( that.context.destination );

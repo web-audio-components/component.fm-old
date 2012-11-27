@@ -1,6 +1,6 @@
 {
   "name": "nko3-swagger",
-  "version": "0.1.0-4",
+  "version": "0.1.0-7",
   "description": "Web Audio Package Manager app",
   "main": "index.js",
   "scripts": {
@@ -12,12 +12,7 @@
   },
   "dependencies": {
     "express": "latest",
-    "mongoose": "latest",
-    "request-extend": "latest",
-    "ejs": "latest",
-    "node-schedule": "latest",
-    "request": "latest",
-    "github": "latest"
+    "ejs": "latest"
   },
   "engines": {
     "node": "0.8.x"

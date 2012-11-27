@@ -1,11 +1,13 @@
 (function () {
   app.views.Player = app.views.View.extend({
-    template : Handlebars.template( app.templates.player ),
+
+    name : 'player',
+
     className : 'player-view',
-    
+
     initialize: function () {
       this.context = new ( window.AudioContext || window.webkitAudioContext )();
-      app.searchResultsView.on( 'select:package', this.loadPackage, this );
+      app.packageView.on( 'select:package', this.loadPackage, this );
 
       this.$el.data( 'hidden', true );
       this.$('.samples').change();

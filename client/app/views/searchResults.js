@@ -1,36 +1,54 @@
 (function () {
   app.views.SearchResults = app.views.View.extend({
     template : Handlebars.template( app.templates.searchResults ),
-  
+
     events : {
       'click a' : 'handlePackageSelect'
     },
 
     initialize: function ( options ) {
+      var that = this;
       this.search = options.search;
       this.packages = new app.collections.Packages();
-      this.packages.on( 'fetched', this.preRender, this );
-      this.search.on( 'query', this.query, this );
 
-      this.packages.fetch();
-    },
+      // Initialized filtered list with a reference to all packages
+      this.filteredPackages = this.packages;
 
-    query : function ( query ) {
-      var packages = this.packages;
-      this.packages.query = query;
-      this.packages.url = '/packages/search/' + query;
+      this.search.on( 'query', this.filterPackages, this );
+
       this.packages.fetch({
-        success: function ( collection ) {
-          packages.trigger( 'fetched' );
+        success : function () {
+          that.render();
         }
       });
     },
 
-    preRender : function () {
-      this.render({
-        packages : this.packages.toJSON(),
-        query : this.packages.query
-      });
+    filterPackages : function ( query ) {
+      var filteredArray;
+
+      // If query exists, filter via it
+      if ( query ) {
+     
+        filteredArray = this.packages.filter(function ( pkg ) {
+          return pkg.matches( query );
+        });
+
+        this.filteredPackages = new app.collections.Packages( filteredArray );
+
+      // Otherwise, just use all packages
+      } else {
+        this.filteredPackages = this.packages;
+      }
+
+      this.query = query;
+      this.render();
+    },
+
+    getRenderData : function () {
+      return {
+        packages : this.filteredPackages.toJSON(),
+        query : this.query
+      };
     },
 
     handlePackageSelect : function ( e ) {

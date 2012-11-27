@@ -4,6 +4,7 @@
     className: 'index-view',
     
     initialize: function () {
+      this.render();
     },
 
     events: {

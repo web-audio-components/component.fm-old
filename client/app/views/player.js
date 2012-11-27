@@ -9,6 +9,7 @@
 
       this.$el.data( 'hidden', true );
       this.$('.samples').change();
+      this.render();
     },
 
     events: {
@@ -16,16 +17,16 @@
     },
 
     loadPackage : function ( name ) {
-      var _this = this;
+      var that = this;
 
       if ( this.$el.data('hidden') ) {
         this.showPlayer();
       }
 
       require(['/packages/' + name + '/script.js'], function ( module ) {
-        _this.module = new module( _this.context );
-        _this.packageLoaded();
-        _this.module.connect( _this.context.destination );
+        that.module = new module( that.context );
+        that.packageLoaded();
+        that.module.connect( that.context.destination );
       });
     },
 
@@ -39,7 +40,7 @@
     },
 
     loadSample : function ( sample ) {
-      var _this = this;
+      var that = this;
 
       // If previous buffer connected and playing, kill it
       if ( this.source && this.source.noteOff ) {
@@ -51,7 +52,7 @@
       xhr.open( 'GET', 'samples/' + sample + '.mp3', true );
       xhr.responseType = 'arraybuffer';
       xhr.onload = function ( buffer ) {
-        _this.loadedSample( buffer, xhr );
+        that.loadedSample( buffer, xhr );
       };
       xhr.send();
     },

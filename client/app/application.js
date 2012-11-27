@@ -6,11 +6,6 @@ app.init = function () {
   });
   app.playerView = new app.views.Player();
 
-  app.searchBarView.render();
-  app.indexView.render();
-  app.searchResultsView.render();
-  app.playerView.render();
-  console.log(app.playerView.$el);
 };
 
 $(function () {

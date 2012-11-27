@@ -529,13 +529,22 @@ This example specifies some dependencies to load as soon as require.js defines r
         }
     }
 });
+
+//Then, later in a separate file, call it 'MyModel.js', a module is
+//defined, specifying 'backbone' as a dependency. RequireJS will use
+//the shim config to properly load 'backbone' and give a local
+//reference to this module. The global Backbone will still exist on
+//the page too.
+define(['backbone'], function (Backbone) {
+  return Backbone.Model.extend({});
+});
 </code></pre>
 
 <p>In RequireJS 2.0.*, the "exports" property in the shim config could have
     been a function instead of a string. In that case, it functioned
 the same as the "init" property as shown above. The "init" pattern is used in
 RequireJS 2.1.0+ so a string value for the exports can be used for
-<a href="config-enforceDefine">enforceDefine</a>, but then allow
+<a href="#config-enforceDefine">enforceDefine</a>, but then allow
 functional work once the library is known to have loaded.</p>
 
 <p>For "modules" that are just jQuery or Backbone plugins that do not need to export
@@ -570,9 +579,12 @@ any module value, the shim config can just be an array of dependencies:</p>
 });
 </code></pre>
 
-<p><b>Important caveat for "shim" config:</b></p>
+<p><b>Important notes for "shim" config:</b></p>
 
 <ul>
+    <li>The shim config only sets up code relationships. To load modules that
+    are part of or use shim config, a normal require/define call is needed. Setting shim by
+    itself does not trigger code to load.</li>
     <li>Only use other "shim" modules as dependencies for shimmed scripts, or
     AMD libraries that have no dependencies and call define() after they also
     create a global (like jQuery or lodash). Otherwise, if you use an AMD
@@ -1073,7 +1085,7 @@ a generic path search path solution, since those are inefficient in the browser.
 </code></pre>
 
 <p>Since DOM ready is a common application need, ideally the nested functions
-in the API above could be avoided. The domReady module also implements the <a href="plugin.html">Loader Plugin API</a>,
+in the API above could be avoided. The domReady module also implements the <a href="plugins.html">Loader Plugin API</a>,
 so you can use the loader plugin syntax (notice the <b>!</b> in the domReady dependency) to force the
 require() callback function to wait for the DOM to be ready before executing. domReady will return
 the current document when used as a loader plugin:</p>

@@ -8,6 +8,7 @@
     "bootstrap" : "*",
     "handlebars" : "*",
     "requirejs" : "*",
+    "moment" : "*",
     "font-awesome" : "*"
   }
 }

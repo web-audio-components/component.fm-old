@@ -25,6 +25,8 @@ if (hasToString) {
 
 doh.registerUrl("simple-nohead", "../simple-nohead.html");
 
+doh.registerUrl("hasOwnPropertyTests", "../hasOwnProperty/hasOwnProperty.html");
+
 //Only do the base test if the urls work out.
 if (location.href.indexOf('http://127.0.0.1/requirejs/') === 0) {
     doh.registerUrl("simple-badbase", "../simple-badbase.html");
@@ -94,6 +96,7 @@ doh.registerUrl("afterload", "../afterload.html", 10000);
 doh.registerUrl("universal", "../universal/universal.html");
 doh.registerUrl("universalBuilt", "../universal/universal-built.html");
 
+doh.registerUrl("defineDouble", "../defineDouble/defineDouble.html");
 doh.registerUrl("definedSpecified", "../definedSpecified/definedSpecified.html");
 doh.registerUrl("delayedDefine", "../delayedDefine/delayedDefine.html");
 doh.registerUrl("nestedDefine", "../nestedDefine/nestedDefine.html");
@@ -106,6 +109,7 @@ doh.registerUrl("pluginsOnError", "../plugins/onerror/onerror.html");
 doh.registerUrl("doublePluginCall", "../plugins/double.html");
 doh.registerUrl("pluginsNameOnly", "../plugins/nameOnly.html");
 doh.registerUrl("pluginsFromText", "../plugins/fromText/fromText.html");
+doh.registerUrl("pluginsFromTextConfig", "../plugins/fromText/fromTextConfig.html");
 doh.registerUrl("pluginsFromTextNoDefine", "../plugins/fromTextNoDefine/fromTextNoDefine.html");
 doh.registerUrl("pluginsTextDepend", "../plugins/textDepend/textDepend.html");
 doh.registerUrl("pluginLast", "../plugins/pluginLast/pluginLast.html");

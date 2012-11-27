@@ -15,6 +15,50 @@ this["app"]["templates"]["index"] = function (Handlebars,depth0,helpers,partials
 
   return "<div class=\"row\">\n  <h1>Web Audio Package Manager</h1>\n  <p>This app is 3 separate components (maybe more, not sure). The goal was to create a package manager for web audio API nodes so they can be accessed all in one place, and browsable on an app, where if they follow a spec, they'll be able to be played in a browser so devs can try them out.</p>\n  <p>The <a href=\"https://github.com/wapm/wapm-cli\">CLI</a> for registering packages is still incomplete, but sending packages to the service.</p>\n  <p>The <a href=\"https://github.com/wapm/wapm-service\">service</a> stores information about the packages and exposes an API for use.</p>\n  <p>The app (this) is in the NKO repo, although all of these were started for 48 hours ago.</p>\n  <p>They all need a lot of love and will be worked on over the next few weeks, but this seemed a bit ambitious for one person :) Will iron out the spec, service, CLI and browsable app in the weeks to come, add components so the effects can be tweeked while browsing, etc.. also a lot of styling love.</p>\n  <p>To try it out, <strong>search for \"reverb\"</strong>, and then load up a sample below!</p>\n  <p><strong>Only works with the Web Audio API (webkit only at the moment)</strong></p>\n</div>\n\n";};
 
+this["app"]["templates"]["package"] = function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
+
+
+  buffer += "<div class=\"row\">\n  <h1>";
+  foundHelper = helpers.name;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</h1>\n  <div class=\"description\">";
+  foundHelper = helpers.description;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.description; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</div>\n  <table class=\"table table-bordered table-striped\">\n    <tbody>\n      <tr>\n        <td class=\"attribute-label\">author</td>\n        <td>\n          ";
+  foundHelper = helpers.author;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.author; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "\n        </td>\n      </tr>\n      <tr>\n        <td class=\"attribute-label\">repo</td>\n        <td><a href=\"https://github.com/";
+  foundHelper = helpers.repo;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.repo; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "\" title=\"GitHub repository for ";
+  foundHelper = helpers.name;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "\">";
+  foundHelper = helpers.repo;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.repo; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</a></td>\n      </tr>\n      <tr>\n        <td class=\"attribute-label\">keywords</td>\n        <td>";
+  foundHelper = helpers.keywords;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.keywords; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</td>\n      </tr>\n      <tr>\n        <td class=\"attribute-label\">updated</td>\n        <td>";
+  foundHelper = helpers.updated;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.updated; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</td>\n      </tr>\n      <tr>\n        <td class=\"attribute-label\">watchers</td>\n        <td>";
+  foundHelper = helpers.watchers;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.watchers; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + " stars</td>\n      </tr>\n    </tbody>\n  </table>\n\n</div>\n";
+  return buffer;};
+
 this["app"]["templates"]["player"] = function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
@@ -56,7 +100,11 @@ function program3(depth0,data) {
 function program5(depth0,data) {
   
   var buffer = "", stack1, foundHelper;
-  buffer += "\n      <li><a href=\"#\" data-name=\"";
+  buffer += "\n      <li><a href=\"#\" data-id=\"";
+  foundHelper = helpers.id;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "\" data-name=\"";
   foundHelper = helpers.name;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
@@ -83,8 +131,36 @@ function program5(depth0,data) {
   return buffer;};
 (function () {
   app.models.Package = Backbone.Model.extend({ 
+    
     initialize : function () {
 
+    },
+
+    // TODO super inefficient search -- probably should cut down
+    // on search scope
+    matches : function ( query ) {
+      var
+        params = query.split(' '),
+        valid = false,
+        pkg = this;
+
+      params = _.map( params, function ( param ) {
+        return new RegExp( param, 'gi' );
+      });
+
+      _.each( params, function ( param ) {
+        if (
+          _.any( pkg.get('keywords') || [], function ( keyword ) {
+            return keyword.match( param );
+          }) ||
+          pkg.get('description').match( param ) ||
+          pkg.get('name').match( param )
+        ) {
+          valid = true;
+        }
+      });
+
+      return valid;
     }
   });
 })();
@@ -129,19 +205,27 @@ function program5(depth0,data) {
 
 (function () {
   app.views.View = Backbone.View.extend({
-    render: function ( data ) {
+
+    render : function () {
+      // Generate template based off of name if doesn't exist
+      this.template = this.template || Handlebars.template( app.templates[ this.name ]);
+
+      var data = this.getRenderData ? this.getRenderData() : {};
       $( '#content' )
-        .append( this.$el.html( this.template( data || {} ) ));
+        .append( this.$el.html( this.template( data )));
     }
   });
 })();
 
 (function () {
   app.views.Index = app.views.View.extend({
-    template: Handlebars.template( app.templates.index ),
+
+    name : 'index',
+
     className: 'index-view',
     
     initialize: function () {
+      this.render();
     },
 
     events: {
@@ -150,16 +234,58 @@ function program5(depth0,data) {
 })();
 
 (function () {
+  app.views.Package = app.views.View.extend({
+
+    name : 'package',
+
+    className : 'package-view',
+
+    initialize : function ( options ) {
+      this.packages = options.packages;
+
+      this.packages.on( 'select', this.setPackage, this );
+    },
+
+    setPackage : function ( pkg ) {
+      app.router.navigate( '/package/' + pkg.get('name'));
+      this.package = pkg;
+      this.render();
+    },
+
+    getRenderData : function () {
+      var json = this.package.toJSON();
+      json.updated = this.formatDate( json.updated );
+      json.keywords = this.formatKeywords( json.keywords );
+      console.log(json.keywords);
+      return json;
+    },
+
+    formatDate : function ( date ) {
+      return moment( date ).format( 'MMMM Do YYYY' );
+    },
+
+    formatKeywords : function ( keywords ) {
+                       console.log(keywords);
+      return ( keywords || [] ).join( ', ' );
+    }
+
+  });
+})();
+
+(function () {
   app.views.Player = app.views.View.extend({
-    template : Handlebars.template( app.templates.player ),
+
+    name : 'player',
+
     className : 'player-view',
-    
+
     initialize: function () {
       this.context = new ( window.AudioContext || window.webkitAudioContext )();
-      app.searchResultsView.on( 'select:package', this.loadPackage, this );
+      app.packageView.on( 'select:package', this.loadPackage, this );
 
       this.$el.data( 'hidden', true );
       this.$('.samples').change();
+      this.render();
     },
 
     events: {
@@ -167,16 +293,16 @@ function program5(depth0,data) {
     },
 
     loadPackage : function ( name ) {
-      var _this = this;
+      var that = this;
 
       if ( this.$el.data('hidden') ) {
         this.showPlayer();
       }
 
       require(['/packages/' + name + '/script.js'], function ( module ) {
-        _this.module = new module( _this.context );
-        _this.packageLoaded();
-        _this.module.connect( _this.context.destination );
+        that.module = new module( that.context );
+        that.packageLoaded();
+        that.module.connect( that.context.destination );
       });
     },
 
@@ -190,7 +316,7 @@ function program5(depth0,data) {
     },
 
     loadSample : function ( sample ) {
-      var _this = this;
+      var that = this;
 
       // If previous buffer connected and playing, kill it
       if ( this.source && this.source.noteOff ) {
@@ -202,7 +328,7 @@ function program5(depth0,data) {
       xhr.open( 'GET', 'samples/' + sample + '.mp3', true );
       xhr.responseType = 'arraybuffer';
       xhr.onload = function ( buffer ) {
-        _this.loadedSample( buffer, xhr );
+        that.loadedSample( buffer, xhr );
       };
       xhr.send();
     },
@@ -229,78 +355,127 @@ function program5(depth0,data) {
 
 (function () {
   app.views.SearchBar = app.views.View.extend({
-    template : Handlebars.template( app.templates.searchBar ),
-    
-    initialize: function () {
+
+    name : 'searchBar',
+
+    className : 'search-bar-view',
+
+    initialize : function () {
+      var that = this;
+
+      this.triggerQuery = _.debounce(function ( query ) {
+        that.trigger( 'query', query );
+      }, 200 );
+
+      this.render();
     },
 
-    events: {
+    events : {
       'keyup #search-bar' : 'handleSearch'
     },
 
-    handleSearch: function ( e ) {
+    handleSearch : function ( e ) {
       var query = $( e.target ).val();
-      this.trigger( 'query', query );
+      query = this.sanitizeQuery( query );
+
+      this.triggerQuery( query );
+
       app.indexView.$el.slideUp();
+    },
+
+    sanitizeQuery : function ( query ) {
+      return query.replace( /[^\w ]/g, '' );
     }
+
   });
 })();
 
 (function () {
   app.views.SearchResults = app.views.View.extend({
-    template : Handlebars.template( app.templates.searchResults ),
-  
+
+    name : 'searchResults',
+
+    className : 'search-results-view',
+
     events : {
       'click a' : 'handlePackageSelect'
     },
 
     initialize: function ( options ) {
+      var that = this;
       this.search = options.search;
-      this.packages = new app.collections.Packages();
-      this.packages.on( 'fetched', this.preRender, this );
-      this.search.on( 'query', this.query, this );
+      this.packages = options.packages;
 
-      this.packages.fetch();
-    },
+      // Initialized filtered list with a reference to all packages
+      this.filteredPackages = this.packages;
 
-    query : function ( query ) {
-      var packages = this.packages;
-      this.packages.query = query;
-      this.packages.url = '/packages/search/' + query;
+      this.search.on( 'query', this.filterPackages, this );
+
       this.packages.fetch({
-        success: function ( collection ) {
-          packages.trigger( 'fetched' );
+        success : function () {
+          that.render();
         }
       });
     },
 
-    preRender : function () {
-      this.render({
-        packages : this.packages.toJSON(),
-        query : this.packages.query
-      });
+    filterPackages : function ( query ) {
+      var filteredArray;
+
+      // If query exists, filter via it
+      if ( query ) {
+     
+        filteredArray = this.packages.filter(function ( pkg ) {
+          return pkg.matches( query );
+        });
+
+        this.filteredPackages = new app.collections.Packages( filteredArray );
+
+      // Otherwise, just use all packages
+      } else {
+        this.filteredPackages = this.packages;
+      }
+
+      app.router.navigate( '/package/search/' + query );
+      this.query = query;
+      this.render();
+    },
+
+    getRenderData : function () {
+      return {
+        packages : this.filteredPackages.toJSON(),
+        query : this.query
+      };
     },
 
     handlePackageSelect : function ( e ) {
-      var name = $( e.target ).data( 'name' );
-      this.trigger( 'select:package', name );
+      var
+        name = $( e.target ).data( 'name' ),
+        pkg = this.packages.where({ name: name })[ 0 ];
+
+      e.preventDefault();
+      this.packages.trigger( 'select', pkg );
     }
   });
 })();
 
 app.init = function () {
+
+  app.packages = new app.collections.Packages();
+
   app.indexView = new app.views.Index();
   app.searchBarView = new app.views.SearchBar();
   app.searchResultsView = new app.views.SearchResults({
-    search : app.searchBarView
+    search : app.searchBarView,
+    packages : app.packages
   });
-  app.playerView = new app.views.Player();
+  app.packageView = new app.views.Package({
+    resultsView : app.searchResultsView,
+    packages : app.packages
+  });
+  app.playerView = new app.views.Player({
+    packageView : app.packageView
+  });
 
-  app.searchBarView.render();
-  app.indexView.render();
-  app.searchResultsView.render();
-  app.playerView.render();
-  console.log(app.playerView.$el);
 };
 
 $(function () {

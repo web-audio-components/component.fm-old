@@ -3,6 +3,8 @@
 
     name : 'searchResults',
 
+    className : 'search-results-view',
+
     events : {
       'click a' : 'handlePackageSelect'
     },
@@ -10,7 +12,7 @@
     initialize: function ( options ) {
       var that = this;
       this.search = options.search;
-      this.packages = new app.collections.Packages();
+      this.packages = options.packages;
 
       // Initialized filtered list with a reference to all packages
       this.filteredPackages = this.packages;
@@ -53,8 +55,12 @@
     },
 
     handlePackageSelect : function ( e ) {
-      var name = $( e.target ).data( 'name' );
-      this.trigger( 'select:package', name );
+      var
+        name = $( e.target ).data( 'name' ),
+        pkg = this.packages.where({ name: name })[ 0 ];
+
+      e.preventDefault();
+      this.packages.trigger( 'select', pkg );
     }
   });
 })();

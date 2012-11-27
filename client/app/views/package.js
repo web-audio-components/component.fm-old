@@ -3,10 +3,12 @@
 
     name : 'package',
 
-    initialize : function () {
-      this.on( 'setPackage', this.setPackage, this );
+    className : 'package-view',
 
-      this.render();
+    initialize : function ( options ) {
+      this.packages = options.packages;
+
+      this.packages.on( 'select', this.setPackage, this );
     },
 
     setPackage : function ( pkg ) {
@@ -15,7 +17,20 @@
     },
 
     getRenderData : function () {
-      return this.package.toJSON();
+      var json = this.package.toJSON();
+      json.updated = this.formatDate( json.updated );
+      json.keywords = this.formatKeywords( json.keywords );
+      console.log(json.keywords);
+      return json;
+    },
+
+    formatDate : function ( date ) {
+      return moment( date ).format( 'MMMM Do YYYY' );
+    },
+
+    formatKeywords : function ( keywords ) {
+                       console.log(keywords);
+      return ( keywords || [] ).join( ', ' );
     }
 
   });

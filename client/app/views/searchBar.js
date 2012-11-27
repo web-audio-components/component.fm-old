@@ -3,6 +3,8 @@
 
     name : 'searchBar',
 
+    className : 'search-bar-view',
+
     initialize : function () {
       var that = this;
 

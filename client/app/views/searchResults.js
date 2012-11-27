@@ -43,6 +43,7 @@
         this.filteredPackages = this.packages;
       }
 
+      app.router.navigate( '/package/search/' + query );
       this.query = query;
       this.render();
     },

@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "express": "latest",
+    "request-extend": "latest",
+    "request": "latest",
     "ejs": "latest"
   },
   "engines": {

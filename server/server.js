@@ -1,11 +1,8 @@
 var
   express = require( 'express' ),
-  mongoose = require( 'mongoose' ),
   reqExtend = require( 'request-extend' ),
   config = require( './config' ),
   app = express();
-
-
 
 app
   .use( express.bodyParser() )

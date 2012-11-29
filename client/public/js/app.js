@@ -13,7 +13,7 @@ this["app"]["templates"]["index"] = function (Handlebars,depth0,helpers,partials
   
 
 
-  return "<div class=\"row\">\n  <h1>Web Audio Package Manager</h1>\n  <p>This app is 3 separate components (maybe more, not sure). The goal was to create a package manager for web audio API nodes so they can be accessed all in one place, and browsable on an app, where if they follow a spec, they'll be able to be played in a browser so devs can try them out.</p>\n  <p>The <a href=\"https://github.com/wapm/wapm-cli\">CLI</a> for registering packages is still incomplete, but sending packages to the service.</p>\n  <p>The <a href=\"https://github.com/wapm/wapm-service\">service</a> stores information about the packages and exposes an API for use.</p>\n  <p>The app (this) is in the NKO repo, although all of these were started for 48 hours ago.</p>\n  <p>They all need a lot of love and will be worked on over the next few weeks, but this seemed a bit ambitious for one person :) Will iron out the spec, service, CLI and browsable app in the weeks to come, add components so the effects can be tweeked while browsing, etc.. also a lot of styling love.</p>\n  <p>To try it out, <strong>search for \"reverb\"</strong>, and then load up a sample below!</p>\n  <p><strong>Only works with the Web Audio API (webkit only at the moment)</strong></p>\n</div>\n\n";};
+  return "<div class=\"row\">\n  <h1>Web Audio Package Manager</h1>\n  <div>\n    This is a collection of modules for the Web Audio API. Browse and demo them on this site, check out the <a href=\"https://github.com/wapm/web-audio-module-spec/blob/master/wapm-spec.md\" title=\"WAPM spec\">spec</a> for making your own modules, and use the <a href=\"https://github.com/wapm/wapm-cli\" title=\"WAPM node tool\">node.js CLI</a> for pulling down modules.\n  </div>\n  <div>\n    This is a work in progress, please submit any issues and feedback to the appropriate project on the <a href=\"https://github.com/wapm\">WAPM GitHub page</a>!\n  </div>\n</div>\n\n";};
 
 this["app"]["templates"]["package"] = function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
@@ -208,12 +208,22 @@ function program5(depth0,data) {
 
     render : function () {
       // Generate template based off of name if doesn't exist
-      this.template = this.template || Handlebars.template( app.templates[ this.name ]);
+      this.template = this.template ||
+        Handlebars.template( app.templates[ this.name ]);
 
       var data = this.getRenderData ? this.getRenderData() : {};
       $( '#content' )
         .append( this.$el.html( this.template( data )));
+    },
+
+    hide : function () {
+      this.$el.slideUp();
+    },
+
+    show : function () {
+      this.$el.slideDown();
     }
+
   });
 })();
 
@@ -224,13 +234,17 @@ function program5(depth0,data) {
 
     className: 'index-view',
     
-    initialize: function () {
-      this.render();
-    },
+    initialize: function ( options ) {
+      this.search = options.search;
+      this.packages = options.packages;
 
-    events: {
+      this.search.on( 'query', this.hide, this );
+      this.packages.on( 'select', this.hide, this );
+      this.render();
     }
+
   });
+
 })();
 
 (function () {
@@ -246,13 +260,16 @@ function program5(depth0,data) {
 
     initialize : function ( options ) {
       this.packages = options.packages;
+      this.search = options.search;
 
       this.packages.on( 'select', this.setPackage, this );
+      this.search.on( 'query', this.hide, this );
     },
 
     setPackage : function ( pkg ) {
       app.router.navigate( '/package/' + pkg.get('name'));
       this.package = pkg;
+      this.show();
       this.render();
     },
 
@@ -260,7 +277,6 @@ function program5(depth0,data) {
       var json = this.package.toJSON();
       json.updated = this.formatDate( json.updated );
       json.keywords = this.formatKeywords( json.keywords );
-      console.log(json.keywords);
       return json;
     },
 
@@ -394,8 +410,6 @@ function program5(depth0,data) {
       query = this.sanitizeQuery( query );
 
       this.triggerQuery( query );
-
-      app.indexView.$el.slideUp();
     },
 
     sanitizeQuery : function ( query ) {
@@ -424,7 +438,8 @@ function program5(depth0,data) {
       // Initialized filtered list with a reference to all packages
       this.filteredPackages = this.packages;
 
-      this.search.on( 'query', this.filterPackages, this );
+      this.search.on( 'query', this.onQuery, this );
+      this.packages.on( 'select', this.onSelect, this );
 
       this.packages.fetch({
         success : function () {
@@ -469,7 +484,20 @@ function program5(depth0,data) {
 
       e.preventDefault();
       this.packages.trigger( 'select', pkg );
+    },
+
+    onQuery : function ( query ) {
+      this.show();
+      this.filterPackages( query );
+    },
+
+    // handlePackageSelect triggers this event on packages
+    // and onSelect subsequently hides the element if a different
+    // source triggers the select package event
+    onSelect : function () {
+      this.hide();
     }
+
   });
 })();
 
@@ -477,18 +505,22 @@ app.init = function () {
 
   app.packages = new app.collections.Packages();
 
-  app.indexView = new app.views.Index();
   app.searchBarView = new app.views.SearchBar();
   app.searchResultsView = new app.views.SearchResults({
     search : app.searchBarView,
     packages : app.packages
   });
   app.packageView = new app.views.Package({
+    search : app.searchBarView,
     resultsView : app.searchResultsView,
     packages : app.packages
   });
   app.playerView = new app.views.Player({
     packageView : app.packageView
+  });
+  app.indexView = new app.views.Index({
+    packages : app.packages,
+    search : app.searchBarView
   });
 
 };

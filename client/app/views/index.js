@@ -5,11 +5,15 @@
 
     className: 'index-view',
     
-    initialize: function () {
-      this.render();
-    },
+    initialize: function ( options ) {
+      this.search = options.search;
+      this.packages = options.packages;
 
-    events: {
+      this.search.on( 'query', this.hide, this );
+      this.packages.on( 'select', this.hide, this );
+      this.render();
     }
+
   });
+
 })();

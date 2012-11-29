@@ -24,8 +24,6 @@
       query = this.sanitizeQuery( query );
 
       this.triggerQuery( query );
-
-      app.indexView.$el.slideUp();
     },
 
     sanitizeQuery : function ( query ) {

@@ -11,13 +11,16 @@
 
     initialize : function ( options ) {
       this.packages = options.packages;
+      this.search = options.search;
 
       this.packages.on( 'select', this.setPackage, this );
+      this.search.on( 'query', this.hide, this );
     },
 
     setPackage : function ( pkg ) {
       app.router.navigate( '/package/' + pkg.get('name'));
       this.package = pkg;
+      this.show();
       this.render();
     },
 
@@ -25,7 +28,6 @@
       var json = this.package.toJSON();
       json.updated = this.formatDate( json.updated );
       json.keywords = this.formatKeywords( json.keywords );
-      console.log(json.keywords);
       return json;
     },
 

@@ -17,7 +17,8 @@
       // Initialized filtered list with a reference to all packages
       this.filteredPackages = this.packages;
 
-      this.search.on( 'query', this.filterPackages, this );
+      this.search.on( 'query', this.onQuery, this );
+      this.packages.on( 'select', this.onSelect, this );
 
       this.packages.fetch({
         success : function () {
@@ -62,6 +63,19 @@
 
       e.preventDefault();
       this.packages.trigger( 'select', pkg );
+    },
+
+    onQuery : function ( query ) {
+      this.show();
+      this.filterPackages( query );
+    },
+
+    // handlePackageSelect triggers this event on packages
+    // and onSelect subsequently hides the element if a different
+    // source triggers the select package event
+    onSelect : function () {
+      this.hide();
     }
+
   });
 })();

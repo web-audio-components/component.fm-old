@@ -1,6 +1,6 @@
 var config = {
   production : {
-    port : 80,
+    port : 9000,
     serviceURL : 'http://wapm-service.jit.su'
   },
   development : {

@@ -93,7 +93,7 @@
   if (typeof exports === 'object') {
     module.exports = allen;
   } else if (typeof define === 'function' && define.amd) {
-    define('allen',function() {
+    define(function() {
       return allen;
     });
   } else {

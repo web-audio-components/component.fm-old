@@ -9,6 +9,7 @@
     "handlebars" : "*",
     "requirejs" : "*",
     "moment" : "*",
+    "allen" : "*",
     "font-awesome" : "*"
   }
 }

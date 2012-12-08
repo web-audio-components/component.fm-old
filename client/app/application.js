@@ -1,6 +1,9 @@
 app.init = function () {
+  
+  console.log('past');
 
   app.packages = new app.collections.Packages();
+  app.context = allen.getAudioContext();
 
   app.searchBarView = new app.views.SearchBar();
   app.searchResultsView = new app.views.SearchResults({
@@ -13,7 +16,8 @@ app.init = function () {
     packages : app.packages
   });
   app.playerView = new app.views.Player({
-    packageView : app.packageView
+    packageView : app.packageView,
+    context : app.context
   });
   app.indexView = new app.views.Index({
     packages : app.packages,
@@ -23,6 +27,12 @@ app.init = function () {
 };
 
 $(function () {
-  app.init.call( app );
-  Backbone.history.start();
+  // Use requirejs to expose allen, since it won't be global
+  // due to existence of requirejs for pulling in
+  // audio modules
+  require([ 'allen' ], function ( allen ) {
+    window.allen = allen;
+    app.init.call( app );
+    Backbone.history.start();
+  });
 });

@@ -20,8 +20,8 @@
     setPackage : function ( pkg ) {
       app.router.navigate( '/package/' + pkg.get('name'));
       this.package = pkg;
-      this.show();
       this.render();
+      this.show();
     },
 
     getRenderData : function () {

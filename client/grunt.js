@@ -32,6 +32,7 @@ module.exports = function(grunt) {
       jslib: {
         src: [
           './components/jquery/jquery.js',
+          './components/jquery-knob/js/jquery.knob.js',
           './components/underscore/underscore.js',
           './components/backbone/backbone.js',
           './components/requirejs/require.js',

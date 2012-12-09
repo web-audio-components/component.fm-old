@@ -4,12 +4,14 @@
   "main": "./public/index.html",
   "dependencies": {
     "jquery" : "*",
+    "jquery-knob" : "*",
+    "underscore" : "*",
     "backbone" : "*",
-    "bootstrap" : "*",
     "handlebars" : "*",
     "requirejs" : "*",
     "moment" : "*",
     "allen" : "*",
+    "bootstrap" : "*",
     "font-awesome" : "*"
   }
 }

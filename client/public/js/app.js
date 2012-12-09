@@ -359,8 +359,8 @@ function program5(depth0,data) {
     setPackage : function ( pkg ) {
       app.router.navigate( '/package/' + pkg.get('name'));
       this.package = pkg;
-      this.show();
       this.render();
+      this.show();
     },
 
     getRenderData : function () {
@@ -446,10 +446,18 @@ function program5(depth0,data) {
     },
 
     createControlView : function ( module ) {
+
+      // If a moduleControlView already exists,
+      // remove it properly
+      if ( this.moduleControlView ) {
+        this.moduleControlView.remove();
+      }
+
       this.moduleControlView = new app.views.ModuleControl({
         module: this.module,
         context: this.context
       });
+
       this.$module.html( this.moduleControlView.$el );
     },
 

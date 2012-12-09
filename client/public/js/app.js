@@ -15,6 +15,43 @@ this["app"]["templates"]["index"] = function (Handlebars,depth0,helpers,partials
 
   return "<div class=\"row\">\n  <h1>Web Audio Package Manager</h1>\n  <div>\n    This is a collection of modules for the Web Audio API. Browse and demo them on this site, check out the <a href=\"https://github.com/wapm/web-audio-module-spec/blob/master/wapm-spec.md\" title=\"WAPM spec\">spec</a> for making your own modules, and use the <a href=\"https://github.com/wapm/wapm-cli\" title=\"WAPM node tool\">node.js CLI</a> for pulling down modules.\n  </div>\n  <div>\n    This is a work in progress, please submit any issues and feedback to the appropriate project on the <a href=\"https://github.com/wapm\">WAPM GitHub page</a>!\n  </div>\n</div>\n\n";};
 
+this["app"]["templates"]["moduleControl"] = function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, foundHelper;
+  buffer += "\n    <div class=\"param\">\n      <input data-min=\"";
+  foundHelper = helpers.minValue;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.minValue; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "\" data-max=\"";
+  foundHelper = helpers.maxValue;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.maxValue; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "\" data-name=\"";
+  foundHelper = helpers.name;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "\" value=\"";
+  foundHelper = helpers.value;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.value; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "\" />\n      <p>";
+  foundHelper = helpers.name;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</p>\n    </div>\n  ";
+  return buffer;}
+
+  buffer += "<div class=\"params\">\n  ";
+  stack1 = depth0.params;
+  stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data)});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n</div>\n";
+  return buffer;};
+
 this["app"]["templates"]["package"] = function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
@@ -64,11 +101,11 @@ this["app"]["templates"]["player"] = function (Handlebars,depth0,helpers,partial
   var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
 
 
-  buffer += "<div class=\"row\">\n  <select class=\"samples\">\n    <option value=\"vox\">vocals</li>\n    <option value=\"lead\">acoustic guitar lead</li>\n    <option value=\"rhythm\">acoustic guitar rhythm</li>\n    <option value=\"solo-dry\">electric guitar lead</li>\n  </select>\n  <div class=\"module well\">\n    <h3>";
+  buffer += "<div class=\"player-loading\">\n  <div class=\"loading-display\"></div>\n</div>\n<div class=\"row\">\n  <div class=\"player\">\n    <div class=\"controls\">\n      <select class=\"samples\">\n        <option value=\"vox\">vocals</li>\n        <option value=\"lead\">acoustic guitar lead</li>\n        <option value=\"rhythm\">acoustic guitar rhythm</li>\n        <option value=\"solo-dry\">electric guitar lead</li>\n      </select>\n      <div class=\"btn-group\">\n        <a href=\"#\" class=\"btn play-button\" data-playing=\"false\"><i class=\"icon-play\"></i></a>\n      </div>\n      <div class=\"hide\">\n        <a href=\"#\" class=\"btn hide-button\"><i class=\"icon-close\"></i></a>\n      </div>\n    </div>\n      <h3>";
   foundHelper = helpers.name;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "</h3>\n\n  </div>\n</div>\n\n";
+  buffer += escapeExpression(stack1) + "</h3>\n    <div class=\"module\">\n\n    </div>\n  </div>\n</div>\n\n";
   return buffer;};
 
 this["app"]["templates"]["searchBar"] = function (Handlebars,depth0,helpers,partials,data) {
@@ -248,6 +285,59 @@ function program5(depth0,data) {
 })();
 
 (function () {
+  app.views.ModuleControl = app.views.View.extend({
+
+    name : 'moduleControl',
+
+    className : 'module-control-view',
+
+    initialize : function ( options ) {
+      this.module = options.module;
+      this.context = options.context;
+
+      this.render();
+      this.initKnobs();
+    },
+
+    initKnobs : function () {
+      var that = this;
+      this.$el.find('input').knob({
+        change : function ( value ) {
+          that.onParamChange.call( this, value, that.module );
+        },
+        angleOffset : -125,
+        angleArc : 250,
+        width : 100,
+        height : 100,
+        fgColor : '#66cc66',
+        bgColor : '#999'
+      });
+    },
+
+    // Called with the context of the knob instance on the input
+    onParamChange : function ( value, module ) {
+      var $input = this.$;
+      module.params[ $input.data( 'name' ) ].value = value;
+    },
+
+    getRenderData : function () {
+      var params = [];
+      
+      if ( this.module.params) {
+        _.each( this.module.params, function ( param ) {
+          params.push( param );
+        });
+      }
+
+      return {
+        params: params
+      };
+    }
+
+  });
+})();
+
+(function () {
   app.views.Package = app.views.View.extend({
 
     name : 'package',
@@ -301,27 +391,35 @@ function program5(depth0,data) {
 
     name : 'player',
 
-    className : 'player-view',
+    className : 'player-view well',
+
+    events: {
+      'change .samples' : 'handleSampleChange',
+      'click .play-button' : 'handlePlayPause',
+      'click .hide-button' : 'handleHide'
+    },
 
     initialize: function ( options ) {
       this.packageView = options.packageView;
-      this.context = new ( window.AudioContext || window.webkitAudioContext )();
+      this.context = options.context;
 
       this.packageView.on( 'activate:demo', this.selectPackage, this );
 
       this.$el.data( 'hidden', true );
-      this.$('.samples').change();
       this.render();
-    },
 
-    events: {
-      'change .samples' : 'handleLoadSample'
+      this.currentSample = 'vox';
+      this.$play = this.$el.find( '.play-button' );
+      this.$module = this.$el.find( '.module' );
+      this.$samples = this.$el.find( '.samples' );
     },
 
     selectPackage : function ( pkg ) {
       this.package = pkg;
       this.loadPackage();
     },
+
+    // Package
 
     loadPackage : function () {
       var that = this;
@@ -330,46 +428,77 @@ function program5(depth0,data) {
         this.showPlayer();
       }
 
+      this.showLoading();
+      
       require(['/packages/' + this.package.get( 'name' ) + '/script.js'], function ( module ) {
         that.module = new module( that.context );
         that.packageLoaded();
         that.module.connect( that.context.destination );
+        that.createControlView( that.module );
       });
     },
 
     packageLoaded : function () {
-
+      if ( this.source ) {
+        this.source.connect( this.module.input );
+      }
+      this.hideLoading();
     },
 
-    handleLoadSample : function ( e ) {
-      var sample = $( e.target ).find(':selected').val();
-      this.loadSample( sample );
+    createControlView : function ( module ) {
+      this.moduleControlView = new app.views.ModuleControl({
+        module: this.module,
+        context: this.context
+      });
+      this.$module.html( this.moduleControlView.$el );
     },
+
+    // Sample
 
     loadSample : function ( sample ) {
       var that = this;
 
-      // If previous buffer connected and playing, kill it
+      this.showLoading();
+      this.removeSample();
+
+      this.source = this.context.createBufferSource();
+      allen.getBuffer( 'samples/' + sample + '.mp3', function ( xhr ) {
+        that.loadedSample( xhr.target.response );
+      });
+    },
+
+    loadedSample : function ( buffer ) {
+      this.source.buffer = this.context.createBuffer( buffer, false );
+      if ( this.module ) {
+        this.source.connect( this.module.input );
+        this.source.noteOn( 0 );
+      }
+      this.hideLoading();
+    },
+
+    removeSample : function () {
+      if ( this.source && this.source.disconnect ) {
+        this.source.disconnect();
+      }
+      this.stopSample();
+    },
+
+    playSample : function () {
+      this.loadSample( this.currentSample );
+      this.$play.data( 'playing', true )
+        .find('i')
+          .removeClass( 'icon-play' )
+          .addClass( 'icon-pause' );
+    },
+
+    stopSample : function () {
+      this.$play.data( 'playing', false )
+        .find('i')
+          .addClass( 'icon-play' )
+          .removeClass( 'icon-pause' );
       if ( this.source && this.source.noteOff ) {
         this.source.noteOff( 0 );
       }
-
-      this.source = this.context.createBufferSource();
-      var xhr = new XMLHttpRequest();
-      xhr.open( 'GET', 'samples/' + sample + '.mp3', true );
-      xhr.responseType = 'arraybuffer';
-      xhr.onload = function ( buffer ) {
-        that.loadedSample( buffer, xhr );
-      };
-      xhr.send();
-    },
-
-    loadedSample : function ( buffer, xhr ) {
-      this.source.buffer = this.context.createBuffer( xhr.response, false );
-      if ( this.module ) {
-        this.source.connect( this.module.input );
-      }
-      this.source.noteOn( 0 );
     },
 
     showPlayer : function () {
@@ -380,7 +509,52 @@ function program5(depth0,data) {
     hidePlayer : function () {
       this.$el.animate({ 'margin-bottom' : '-150px' });
       this.$el.data('hidden', true);
+    },
+
+    // Loading GUI
+
+    showLoading : function () {
+      this.$el
+        .find('.player-loading').show().end()
+        .find('select, a').prop('disabled', true)
+          .addClass('disabled');
+    },
+
+    hideLoading : function () {
+      this.$el
+        .find('.player-loading').hide().end()
+        .find('select, a').prop('disabled', false)
+          .removeClass('disabled');
+    },
+
+    // Event handlers
+
+    handlePlayPause : function ( e ) {
+      e.preventDefault();
+
+      // Abort if button has class disabled
+      if ( this.$play.hasClass('disabled') ) {
+        return;
+      }
+
+      if ( this.$play.data( 'playing' ) ) {
+        this.stopSample();
+      } else {
+        this.playSample();
+      }
+    },
+
+    handleHide : function ( e ) {
+      e.preventDefault();
+      this.stopSample();
+      this.hide();
+    },
+
+    handleSampleChange : function () {
+      this.stopSample();
+      this.currentSample = this.$samples.find(':selected').val();
     }
+
   });
 })();
 
@@ -502,8 +676,11 @@ function program5(depth0,data) {
 })();
 
 app.init = function () {
+  
+  console.log('past');
 
   app.packages = new app.collections.Packages();
+  app.context = allen.getAudioContext();
 
   app.searchBarView = new app.views.SearchBar();
   app.searchResultsView = new app.views.SearchResults({
@@ -516,7 +693,8 @@ app.init = function () {
     packages : app.packages
   });
   app.playerView = new app.views.Player({
-    packageView : app.packageView
+    packageView : app.packageView,
+    context : app.context
   });
   app.indexView = new app.views.Index({
     packages : app.packages,
@@ -526,6 +704,12 @@ app.init = function () {
 };
 
 $(function () {
-  app.init.call( app );
-  Backbone.history.start();
+  // Use requirejs to expose allen, since it won't be global
+  // due to existence of requirejs for pulling in
+  // audio modules
+  require([ 'allen' ], function ( allen ) {
+    window.allen = allen;
+    app.init.call( app );
+    Backbone.history.start();
+  });
 });

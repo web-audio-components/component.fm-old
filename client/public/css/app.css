@@ -2,13 +2,33 @@ body {
   padding-top: 60px;
   padding-bottom: 40px;
 }
+.row {
+  margin-left: 0px;
+}
+
+.module-control-view .param {
+  float: right;
+  margin-right: 35px;
+  margin-top: 15px;
+  text-align: center;
+}
 
 .player-view {
-  height: 150px;
+  height: 170px;
   width: 920px;
   bottom: 0px;
   position: fixed;
-  margin-bottom: -150px;
+  margin-bottom: -200px;
+}
+.player-view.well {
+  padding: 9px;
+}
+.player-view .controls .samples,
+.player-view .controls .btn-group {
+  float: left;
+}
+.player-view .controls .hide {
+  float: right;
 }
 
 #search-bar {

@@ -3,11 +3,12 @@
 
     name : 'player',
 
-    className : 'player-view',
+    className : 'player-view well',
 
     events: {
-      'change .samples' : 'handleLoadSample',
-      'click .play-button' : 'handlePlayPause'
+      'change .samples' : 'handleSampleChange',
+      'click .play-button' : 'handlePlayPause',
+      'click .hide-button' : 'handleHide'
     },
 
     initialize: function ( options ) {
@@ -19,8 +20,10 @@
       this.$el.data( 'hidden', true );
       this.render();
 
+      this.currentSample = 'vox';
       this.$play = this.$el.find( '.play-button' );
-      this.loadSample( 'vox' );
+      this.$module = this.$el.find( '.module' );
+      this.$samples = this.$el.find( '.samples' );
     },
 
     selectPackage : function ( pkg ) {
@@ -43,6 +46,7 @@
         that.module = new module( that.context );
         that.packageLoaded();
         that.module.connect( that.context.destination );
+        that.createControlView( that.module );
       });
     },
 
@@ -51,6 +55,14 @@
         this.source.connect( this.module.input );
       }
       this.hideLoading();
+    },
+
+    createControlView : function ( module ) {
+      this.moduleControlView = new app.views.ModuleControl({
+        module: this.module,
+        context: this.context
+      });
+      this.$module.html( this.moduleControlView.$el );
     },
 
     // Sample
@@ -71,6 +83,7 @@
       this.source.buffer = this.context.createBuffer( buffer, false );
       if ( this.module ) {
         this.source.connect( this.module.input );
+        this.source.noteOn( 0 );
       }
       this.hideLoading();
     },
@@ -83,16 +96,14 @@
     },
 
     playSample : function () {
-                   console.log('playsample');
+      this.loadSample( this.currentSample );
       this.$play.data( 'playing', true )
         .find('i')
           .removeClass( 'icon-play' )
           .addClass( 'icon-pause' );
-      this.source.noteOn( 0 );
     },
 
     stopSample : function () {
-                   console.log('stopsample');
       this.$play.data( 'playing', false )
         .find('i')
           .addClass( 'icon-play' )
@@ -130,11 +141,6 @@
 
     // Event handlers
 
-    handleLoadSample : function ( e ) {
-      var sample = $( e.target ).find(':selected').val();
-      this.loadSample( sample );
-    },
-
     handlePlayPause : function ( e ) {
       e.preventDefault();
 
@@ -148,6 +154,17 @@
       } else {
         this.playSample();
       }
+    },
+
+    handleHide : function ( e ) {
+      e.preventDefault();
+      this.stopSample();
+      this.hide();
+    },
+
+    handleSampleChange : function () {
+      this.stopSample();
+      this.currentSample = this.$samples.find(':selected').val();
     }
 
   });

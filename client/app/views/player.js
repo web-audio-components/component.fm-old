@@ -58,10 +58,18 @@
     },
 
     createControlView : function ( module ) {
+
+      // If a moduleControlView already exists,
+      // remove it properly
+      if ( this.moduleControlView ) {
+        this.moduleControlView.remove();
+      }
+
       this.moduleControlView = new app.views.ModuleControl({
         module: this.module,
         context: this.context
       });
+
       this.$module.html( this.moduleControlView.$el );
     },
 

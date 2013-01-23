@@ -17,6 +17,8 @@ require( './router' )( app );
 
 app.listen( config.port );
 
+require('./lib/fetch')();
+
 console.log( 'WAPM app listening on port ' + config.port );
 
 module.exports = app;

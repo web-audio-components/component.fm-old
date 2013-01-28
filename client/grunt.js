@@ -61,13 +61,20 @@ module.exports = function(grunt) {
           'build/backbone.css',
           'build/site.css'
         ],
-        dest: 'public/js/app.css'
+        dest: 'public/css/app.css'
       }
     },
     min: {
       js: {
         src: 'public/js/app.js',
         dest: 'public/js/app.min.js'
+      }
+    },
+    mincss: {
+      compress: {
+        files: {
+          'public/css/app.min.css' : 'public/css/app.css'
+        }
       }
     },
     copy: {

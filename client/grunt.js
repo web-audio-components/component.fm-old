@@ -19,8 +19,7 @@ module.exports = function(grunt) {
       components: {
         output: 'build',
         config: 'component.json',
-        styles: true,
-        standalone: true
+        styles: true
       }
     },
     handlebars: {

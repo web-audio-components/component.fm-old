@@ -1,8 +1,5 @@
 {
   "name": "web-audio-components-site",
-  "private": true,
-  "version": "0.1.0",
-  "main": "./public/index.html",
   "dependencies": {
     "web-audio-components/rack" : "*",
     "component/moment" : "*",

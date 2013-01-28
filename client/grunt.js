@@ -11,14 +11,14 @@ module.exports = function(grunt) {
     less: {
       compile: {
         files: {
-          './build/bootstrap.css' : './vendor/styles/bootstrap/bootstrap.less'
+          'build/bootstrap.css' : 'vendor/styles/bootstrap/bootstrap.less'
         }
       }
     },
     component: {
       components: {
-        output: './build',
-        config: './component.json',
+        output: 'build',
+        config: 'component.json',
         styles: true,
         standalone: true
       }
@@ -32,34 +32,34 @@ module.exports = function(grunt) {
           }
         },
         files: {
-          './build/templates.js' : 'app/templates/*.hbs'
+          'build/templates.js' : 'app/templates/*.hbs'
         }
       }
     },
     concat: {
       js: {
         src: [
-          './vendor/scripts/jquery.js',
-          './vendor/scripts/underscore.js',
-          './vendor/scripts/backbone.js',
-          './vendor/scripts/handlebars.js',
-          './build/components.js',
-          './app/setup.js',
-          './build/templates.js',
-          './app/models/*.js',
-          './app/collections/*.js',
-          './app/routes/*.js',
-          './app/views/View.js',
-          './app/views/*.js',
-          './app/application.js'
+          'vendor/scripts/jquery.js',
+          'vendor/scripts/underscore.js',
+          'vendor/scripts/backbone.js',
+          'vendor/scripts/handlebars.js',
+          'build/components.js',
+          'app/setup.js',
+          'build/templates.js',
+          'app/models/*.js',
+          'app/collections/*.js',
+          'app/routes/*.js',
+          'app/views/View.js',
+          'app/views/*.js',
+          'app/application.js'
         ],
         dest: 'public/js/app.js'
       },
       css: {
         src: [
-          './build/components.css',
-          './build/backbone.css',
-          './build/site.css'
+          'build/components.css',
+          'build/backbone.css',
+          'build/site.css'
         ],
         dest: 'public/js/app.css'
       }
@@ -68,6 +68,14 @@ module.exports = function(grunt) {
       js: {
         src: 'public/js/app.js',
         dest: 'public/js/app.min.js'
+      }
+    },
+    copy: {
+      main: {
+        files: [{
+          src: 'build/web-audio-components-rack/*',
+          dest: 'public/css/web-audio-components-rack/'
+        }]
       }
     },
     watch: {
@@ -81,13 +89,13 @@ module.exports = function(grunt) {
           'app/templates/*.hbs',
           'app/styles/*.styl'
         ],
-        tasks: 'less stylus handlebars component concat min'
+        tasks: 'less stylus handlebars component concat copy min'
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib');
   grunt.loadNpmTasks('grunt-component-build');
-  grunt.registerTask('default', 'less stylus handlebars component concat min');
+  grunt.registerTask('default', 'less stylus handlebars component concat copy min');
 
 };

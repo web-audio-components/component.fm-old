@@ -1,9 +1,10 @@
 {
-  "name": "wapm-app-client",
+  "name": "web audio componets site",
   "version": "0.1.0",
-  "description": "client-side of the wapm application",
+  "description": "",
   "main": "",
   "devDependencies": {
-    "grunt-contrib" : "latest"
+    "grunt-contrib" : "latest",
+    "grunt-component-build" : "latest"
   }
 }

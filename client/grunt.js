@@ -4,15 +4,23 @@ module.exports = function(grunt) {
     stylus: {
       compile: {
         files: {
-          'public/css/app.css' : 'app/styles/*.styl'
+          'build/site.css' : 'app/styles/*.styl'
         }
       }
     },
     less: {
       compile: {
         files: {
-          'public/css/lib.css' : './components/bootstrap/less/bootstrap.less'
+          './build/bootstrap.css' : './vendor/styles/bootstrap/bootstrap.less'
         }
+      }
+    },
+    component: {
+      components: {
+        output: './build',
+        config: './component.json',
+        styles: true,
+        standalone: true
       }
     },
     handlebars: {
@@ -24,28 +32,20 @@ module.exports = function(grunt) {
           }
         },
         files: {
-          'public/js/templates.js' : 'app/templates/*.hbs'
+          './build/templates.js' : 'app/templates/*.hbs'
         }
       }
     },
     concat: {
-      jslib: {
+      js: {
         src: [
-          './components/jquery/jquery.js',
-          './components/jquery-knob/js/jquery.knob.js',
-          './components/underscore/underscore.js',
-          './components/backbone/backbone.js',
-          './components/requirejs/require.js',
-          './components/moment/moment.js',
-          './components/allen/allen.js',
-          './components/handlebars/handlebars-1.0.0-rc.1.js'
-        ],
-        dest: 'public/js/lib.js'
-      },
-      jsapp: {
-        src: [
+          './vendor/scripts/jquery.js',
+          './vendor/scripts/underscore.js',
+          './vendor/scripts/backbone.js',
+          './vendor/scripts/handlebars.js',
+          './build/components.js',
           './app/setup.js',
-          './public/js/templates.js',
+          './build/templates.js',
           './app/models/*.js',
           './app/collections/*.js',
           './app/routes/*.js',
@@ -54,16 +54,20 @@ module.exports = function(grunt) {
           './app/application.js'
         ],
         dest: 'public/js/app.js'
+      },
+      css: {
+        src: [
+          './build/components.css',
+          './build/backbone.css',
+          './build/site.css'
+        ],
+        dest: 'public/js/app.css'
       }
     },
     min: {
-      jsapp: {
+      js: {
         src: 'public/js/app.js',
         dest: 'public/js/app.min.js'
-      },
-      jslib: {
-        src: 'public/js/lib.js',
-        dest: 'public/js/lib.min.js'
       }
     },
     watch: {
@@ -77,12 +81,13 @@ module.exports = function(grunt) {
           'app/templates/*.hbs',
           'app/styles/*.styl'
         ],
-        tasks: 'less stylus handlebars concat min'
+        tasks: 'less stylus handlebars component concat min'
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib');
-  grunt.registerTask('default', 'less stylus handlebars concat min');
+  grunt.loadNpmTasks('grunt-component-build');
+  grunt.registerTask('default', 'less stylus handlebars component concat min');
 
 };

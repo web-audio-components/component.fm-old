@@ -5,25 +5,33 @@
 
     },
 
-    // TODO super inefficient search -- probably should cut down
-    // on search scope
-    matches : function ( query ) {
+    /**
+     * Determines whether the package instance 
+     * matches the query string
+     *
+     * @param {String} query
+     * @return {Boolean}
+     * @TODO super inefficient search -- probably should cut down
+     * on search scope
+     */
+
+    matches : function (query) {
       var
         params = query.split(' '),
         valid = false,
         pkg = this;
 
-      params = _.map( params, function ( param ) {
-        return new RegExp( param, 'gi' );
+      params = _.map(params, function (param) {
+        return new RegExp(param, 'gi');
       });
 
-      _.each( params, function ( param ) {
+      _.each(params, function (param) {
         if (
-          _.any( pkg.get('keywords') || [], function ( keyword ) {
-            return keyword.match( param );
+          _.any(pkg.get('keywords') || [], function (keyword) {
+            return keyword.match(param);
           }) ||
-          pkg.get('description').match( param ) ||
-          pkg.get('name').match( param )
+          pkg.get('description').match(param) ||
+          pkg.get('name').match(param)
         ) {
           valid = true;
         }

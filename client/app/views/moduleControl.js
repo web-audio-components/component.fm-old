@@ -8,9 +8,15 @@
     initialize : function ( options ) {
       this.module = options.module;
       this.context = options.context;
-
+      console.log(this.module);
+      this.rack = new Rack(this.module);
       this.render();
-      this.initKnobs();
+    },
+
+    render: function () {
+      $('#content')
+        .append(this.$el.html(this.rack.el));
+      return this;
     },
 
     initKnobs : function () {

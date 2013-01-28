@@ -41,13 +41,21 @@
       }
 
       this.showLoading();
-      
+
+      this.package.injectBuild(function () {
+        that.Module = require(that.package.get('name'));
+        that.module = new that.Module(app.context, {});
+        that.packageLoaded();
+        that.module.connect(that.context.destination);
+        that.createControlView(that.module);
+      });
+      /*
       require(['/packages/' + this.package.get( 'name' ) + '/script.js'], function ( module ) {
         that.module = new module( that.context );
         that.packageLoaded();
         that.module.connect( that.context.destination );
         that.createControlView( that.module );
-      });
+      });*/
     },
 
     packageLoaded : function () {

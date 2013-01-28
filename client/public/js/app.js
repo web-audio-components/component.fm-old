@@ -14450,8 +14450,7 @@ Handlebars.VM = {
 Handlebars.template = Handlebars.VM.template;
 ;
 
-;(function(){
-  
+
 
 /**
  * hasOwnProperty.
@@ -14659,8 +14658,7 @@ require.relative = function(parent) {
 
   return localRequire;
 };
-
-  require.register("matthewmueller-hogan/hogan.js", function(exports, require, module){
+require.register("matthewmueller-hogan/hogan.js", function(exports, require, module){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18497,8 +18495,8 @@ require.register("jsantell-allen/allen.js", function(exports, require, module){
 }).call(this);
 
 });
-require.alias("web-audio-components-rack/index.js", "web audio components site/deps/rack/index.js");
-require.alias("web-audio-components-rack/template.js", "web audio components site/deps/rack/template.js");
+require.alias("web-audio-components-rack/index.js", "web-audio-components-site/deps/rack/index.js");
+require.alias("web-audio-components-rack/template.js", "web-audio-components-site/deps/rack/template.js");
 require.alias("matthewmueller-hogan/hogan.js", "web-audio-components-rack/deps/hogan/hogan.js");
 require.alias("matthewmueller-hogan/index.js", "web-audio-components-rack/deps/hogan/index.js");
 
@@ -18546,28 +18544,22 @@ require.alias("component-emitter/index.js", "jsantell-button/deps/emitter/index.
 require.alias("component-classes/index.js", "jsantell-button/deps/classes/index.js");
 require.alias("component-indexof/index.js", "component-classes/deps/indexof/index.js");
 
-require.alias("component-moment/index.js", "web audio components site/deps/moment/index.js");
+require.alias("component-moment/index.js", "web-audio-components-site/deps/moment/index.js");
 
-require.alias("jsantell-allen/index.js", "web audio components site/deps/allen/index.js");
-require.alias("jsantell-allen/allen.js", "web audio components site/deps/allen/allen.js");
-require.alias("jsantell-allen/index.js", "web audio components site/deps/allen/index.js");
+require.alias("jsantell-allen/index.js", "web-audio-components-site/deps/allen/index.js");
+require.alias("jsantell-allen/allen.js", "web-audio-components-site/deps/allen/allen.js");
+require.alias("jsantell-allen/index.js", "web-audio-components-site/deps/allen/index.js");
 require.alias("jsantell-allen/index.js", "jsantell-allen/index.js");
 
-require.alias("web audio components site/./public/index.html", "web audio components site/index.js");
 
-
-  if ("undefined" == typeof module) {
-    window.components = require("components");
-  } else {
-    module.exports = require("components");
-  }
-})();
 var app = app || {};
 app.views = {};
 app.models = {};
 app.collections = {};
 app.templates = {};
-app.config = {};
+app.config = {
+  apiURL: 'http://web-audio-components-api.jit.su/'
+};
 
 this["app"] = this["app"] || {};
 this["app"]["templates"] = this["app"]["templates"] || {};
@@ -18740,40 +18732,64 @@ function program5(depth0,data) {
 
     },
 
-    // TODO super inefficient search -- probably should cut down
-    // on search scope
-    matches : function ( query ) {
+    /**
+     * Determines whether the package instance 
+     * matches the query string
+     *
+     * @param {String} query
+     * @return {Boolean}
+     * @TODO super inefficient search -- probably should cut down
+     * on search scope
+     */
+
+    matches : function (query) {
       var
         params = query.split(' '),
         valid = false,
         pkg = this;
 
-      params = _.map( params, function ( param ) {
-        return new RegExp( param, 'gi' );
+      params = _.map(params, function (param) {
+        return new RegExp(param, 'gi');
       });
 
-      _.each( params, function ( param ) {
+      _.each(params, function (param) {
         if (
-          _.any( pkg.get('keywords') || [], function ( keyword ) {
-            return keyword.match( param );
+          _.any(pkg.get('keywords') || [], function (keyword) {
+            return keyword.match(param);
           }) ||
-          pkg.get('description').match( param ) ||
-          pkg.get('name').match( param )
+          pkg.get('description').match(param) ||
+          pkg.get('name').match(param)
         ) {
           valid = true;
         }
       });
 
       return valid;
+    },
+
+    /**
+     * Injects the package's related built script
+     * into the DOM. Takes a callback to fire on load
+     *
+     * @param {Function} callback
+     */
+
+    injectBuild : function (callback) {
+      var
+        url = app.config.apiURL + 'components/' + this.get('repo') + '/build.js',
+        scriptEl = document.createElement('script');
+      scriptEl.src = url;
+      scriptEl.onload = callback;
+      $('body').append(scriptEl);
     }
   });
 })();
 
 (function () {
   app.collections.Packages = Backbone.Collection.extend({
-    model : app.models.Package,
+    model: app.models.Package,
 
-    url : '/packages',
+    url: app.config.apiURL + 'components',
 
     initialize: function () {
 
@@ -18996,13 +19012,18 @@ function program5(depth0,data) {
       }
 
       this.showLoading();
-      
+
+      this.package.injectBuild(function () {
+        console.log(arguments);
+        console.log('loaded');
+      });
+      /*
       require(['/packages/' + this.package.get( 'name' ) + '/script.js'], function ( module ) {
         that.module = new module( that.context );
         that.packageLoaded();
         that.module.connect( that.context.destination );
         that.createControlView( that.module );
-      });
+      });*/
     },
 
     packageLoaded : function () {
@@ -19250,41 +19271,47 @@ function program5(depth0,data) {
   });
 })();
 
-app.init = function () {
-  
-  console.log('past');
+/**
+ * Globally expose components
+ */
 
+window.Rack   = require('web-audio-components-rack');
+window.moment = require('component-moment');
+window.allen  = require('jsantell-allen');
+
+/**
+ * Initialize app
+ */
+
+app.init = function () {  
   app.packages = new app.collections.Packages();
   app.context = allen.getAudioContext();
 
   app.searchBarView = new app.views.SearchBar();
+  
   app.searchResultsView = new app.views.SearchResults({
     search : app.searchBarView,
     packages : app.packages
   });
+  
   app.packageView = new app.views.Package({
     search : app.searchBarView,
     resultsView : app.searchResultsView,
     packages : app.packages
   });
+  
   app.playerView = new app.views.Player({
     packageView : app.packageView,
     context : app.context
   });
+
   app.indexView = new app.views.Index({
     packages : app.packages,
     search : app.searchBarView
   });
-
 };
 
 $(function () {
-  // Use requirejs to expose allen, since it won't be global
-  // due to existence of requirejs for pulling in
-  // audio modules
-  require([ 'allen' ], function ( allen ) {
-    window.allen = allen;
-    app.init.call( app );
-    Backbone.history.start();
-  });
+  app.init.call( app );
+  Backbone.history.start();
 });

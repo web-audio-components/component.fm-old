@@ -52,8 +52,9 @@
         url = app.config.apiURL + 'components/' + this.get('repo') + '/build.js',
         scriptEl = document.createElement('script');
       scriptEl.src = url;
+      scriptEl.type = 'text/javascript';
       scriptEl.onload = callback;
-      $('body').append(scriptEl);
+      document.getElementsByTagName('head')[0].appendChild(scriptEl);
     }
   });
 })();

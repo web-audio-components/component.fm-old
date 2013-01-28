@@ -38,6 +38,22 @@
       });
 
       return valid;
+    },
+
+    /**
+     * Injects the package's related built script
+     * into the DOM. Takes a callback to fire on load
+     *
+     * @param {Function} callback
+     */
+
+    injectBuild : function (callback) {
+      var
+        url = app.config.apiURL + 'components/' + this.get('repo') + '/build.js',
+        scriptEl = document.createElement('script');
+      scriptEl.src = url;
+      scriptEl.onload = callback;
+      $('body').append(scriptEl);
     }
   });
 })();

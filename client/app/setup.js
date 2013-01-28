@@ -3,4 +3,6 @@ app.views = {};
 app.models = {};
 app.collections = {};
 app.templates = {};
-app.config = {};
+app.config = {
+  apiURL: 'http://web-audio-components-api.jit.su/'
+};

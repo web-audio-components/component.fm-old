@@ -58,7 +58,7 @@ module.exports = function(grunt) {
       css: {
         src: [
           'build/components.css',
-          'build/backbone.css',
+          'build/bootstrap.css',
           'build/site.css'
         ],
         dest: 'public/css/app.css'

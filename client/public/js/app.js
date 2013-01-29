@@ -17206,7 +17206,7 @@ function getRenderData (module) {
   var meta = module.meta || {};
   var data = {};
 
-  data.name = module.meta.name;
+  data.name = format(module.meta.name);
   data.params = [];
 
   each(meta.params, function (values, prop) {
@@ -17225,6 +17225,18 @@ function getRenderData (module) {
   });
 
   return data;
+}
+
+/**
+ * Strips white space, converts to hyphens
+ *
+ * @param {String} string
+ * @return {String}
+ * @api private
+ */
+
+function format (string) {
+  return (string || '').replace(/ /g, '-');
 }
 
 });
@@ -18557,9 +18569,17 @@ app.views = {};
 app.models = {};
 app.collections = {};
 app.templates = {};
+
 app.config = {
-  apiURL: 'http://web-audio-components-api.jit.su/'
+  development : {
+    apiURL: 'http://localhost:8000/'
+  },
+  production : {
+    apiURL: 'http://web-audio-components-api.jit.su/'
+  }
 };
+
+app.config = app.config[ENV || 'development'];
 
 this["app"] = this["app"] || {};
 this["app"]["templates"] = this["app"]["templates"] || {};
@@ -18779,8 +18799,9 @@ function program5(depth0,data) {
         url = app.config.apiURL + 'components/' + this.get('repo') + '/build.js',
         scriptEl = document.createElement('script');
       scriptEl.src = url;
+      scriptEl.type = 'text/javascript';
       scriptEl.onload = callback;
-      $('body').append(scriptEl);
+      document.getElementsByTagName('head')[0].appendChild(scriptEl);
     }
   });
 })();
@@ -18877,9 +18898,15 @@ function program5(depth0,data) {
     initialize : function ( options ) {
       this.module = options.module;
       this.context = options.context;
-
+      console.log(this.module);
+      this.rack = new Rack(this.module);
       this.render();
-      this.initKnobs();
+    },
+
+    render: function () {
+      $('#content')
+        .append(this.$el.html(this.rack.el));
+      return this;
     },
 
     initKnobs : function () {
@@ -19014,8 +19041,11 @@ function program5(depth0,data) {
       this.showLoading();
 
       this.package.injectBuild(function () {
-        console.log(arguments);
-        console.log('loaded');
+        that.Module = require(that.package.get('name'));
+        that.module = new that.Module(app.context, {});
+        that.packageLoaded();
+        that.module.connect(that.context.destination);
+        that.createControlView(that.module);
       });
       /*
       require(['/packages/' + this.package.get( 'name' ) + '/script.js'], function ( module ) {

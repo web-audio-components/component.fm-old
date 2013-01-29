@@ -66,13 +66,13 @@ module.exports = function(grunt) {
     min: {
       js: {
         src: 'public/js/app.js',
-        dest: 'public/js/app.min.js'
+        dest: 'production/js/app.min.js'
       }
     },
     mincss: {
       compress: {
         files: {
-          'public/css/app.min.css' : 'public/css/app.css'
+          'production/css/app.min.css' : 'public/css/app.css'
         }
       }
     },
@@ -81,6 +81,9 @@ module.exports = function(grunt) {
         files: [{
           src: 'build/web-audio-components-rack/*',
           dest: 'public/css/web-audio-components-rack/'
+        }, {
+          src: 'build/web-audio-components-rack/*',
+          dest: 'production/css/web-audio-components-rack/'
         }]
       }
     },
@@ -95,13 +98,13 @@ module.exports = function(grunt) {
           'app/templates/*.hbs',
           'app/styles/*.styl'
         ],
-        tasks: 'less stylus handlebars component concat copy min'
+        tasks: 'less stylus handlebars component concat mincss copy min'
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib');
   grunt.loadNpmTasks('grunt-component-build');
-  grunt.registerTask('default', 'less stylus handlebars component concat copy min');
+  grunt.registerTask('default', 'less stylus handlebars component concat mincss copy min');
 
 };

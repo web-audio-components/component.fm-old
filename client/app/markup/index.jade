@@ -22,6 +22,10 @@ html
     #content.container
 
     - if (env === 'development')
+      script
+        var ENV = 'development';
       script(src='js/app.js')
     - else
+      script
+        var ENV = 'production';
       script(src='js/app.min.js')

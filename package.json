@@ -1,26 +1,17 @@
 {
-  "name": "nko3-swagger",
+  "name": "web-audio-components-client",
   "version": "0.1.0-7",
-  "description": "Web Audio Package Manager app",
+  "description": "Web Audio Components Client",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:nko3/swagger.git"
-  },
   "dependencies": {
     "express": "3.0.x",
-    "request-extend": "0.1.x",
-    "request": "2.12.x",
-    "ejs": "0.8.x",
-    "underscore": "*",
-    "redis-node": "*",
-    "async" : "*"
+    "ejs": "0.8.x"
   },
   "engines": {
     "node": "0.8.x"
   },
-  "subdomain": "swagger.nko3"
+  "subdomain": ""
 }

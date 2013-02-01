@@ -139,7 +139,7 @@
 }
 
 .rack-container .rack-logo {
-  background: no-repeat url("/web-audio-components-rack/webaudiocomponents-logo.png");
+  background: no-repeat url("web-audio-components-rack/webaudiocomponents-logo.png");
   width: 100px;
   height: 100px;
 }
@@ -5345,10 +5345,6 @@ body {
 .player-view .controls .samples,
 .player-view .controls .btn-group {
   float: left;
-}
-.player-view .controls {
-  position: absolute;
-  top: -100px;
 }
 .player-view .controls .hide {
   float: right;

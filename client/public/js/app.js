@@ -19244,6 +19244,13 @@ function program5(depth0,data) {
 
     sanitizeQuery : function ( query ) {
       return query.replace( /[^\w ]/g, '' );
+    },
+
+    render : function () {
+      this.template = this.template ||
+        Handlebars.template(app.templates[this.name]);
+      $('.search-bar')
+        .append(this.$el.html(this.template()));
     }
 
   });

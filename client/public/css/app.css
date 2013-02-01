@@ -5318,11 +5318,21 @@ a.badge:hover {
 }
 
 body {
-  padding-top: 60px;
   padding-bottom: 40px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 .row {
   margin-left: 0px;
+}
+.navbar .logo {
+  background-image: url("../img/webaudiocomponents-50.png");
+  width: 50px;
+  height: 50px;
+  float: left;
+  margin-right: 10px;
+}
+.navbar .container > {
+  margin-top: 10px;
 }
 
 .module-control-view .param {
@@ -5348,15 +5358,4 @@ body {
 }
 .player-view .controls .hide {
   float: right;
-}
-
-#search-bar {
-  width: 900px;
-  height: 30px;
-  font-size: 30px;
-  line-height: 36px;
-}
-.form-search .add-on {
-  height: 25px;
-  padding-top: 9px;
 }

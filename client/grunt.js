@@ -116,7 +116,8 @@ module.exports = function(grunt) {
           'app/routes/*.js',
           'app/views/*.js',
           'app/templates/*.hbs',
-          'app/styles/*.styl'
+          'app/styles/*.styl',
+          'app/markup/*.jade'
         ],
         tasks: 'less stylus handlebars component jade concat mincss copy min'
       }

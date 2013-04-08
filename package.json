@@ -1,8 +1,12 @@
 {
-  "name": "web-audio-components-client",
-  "version": "0.1.0-7",
+  "name": "component.fm",
   "description": "Web Audio Components Client",
+  "version": "0.1.0-8",
+  "private": true,
   "main": "index.js",
+  "domains": [
+    "component.fm"
+  ],
   "scripts": {
     "start": "node index.js"
   },
@@ -13,5 +17,5 @@
   "engines": {
     "node": "0.8.x"
   },
-  "subdomain": ""
+  "subdomain": "component-fm"
 }
